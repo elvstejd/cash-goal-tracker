@@ -74,7 +74,8 @@ function App() {
         <CircularProgressbarWithChildren
           value={completionPercent}
           styles={{
-            path: { stroke: theme.colors.primary.value }
+            path: { stroke: theme.colors.primary.value },
+            trail: { stroke: theme.colors.gray200.value }
           }}
         >
           <CenterAligned>
