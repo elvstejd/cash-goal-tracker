@@ -13,8 +13,7 @@ const Main = styled.div`
 
 const ProgressBarContainer = styled.div`
   max-width: 20rem;
-  margin: 0 auto;
-  margin-top: 2rem;
+  margin: 3rem auto;
 `;
 
 const CenterAligned = styled.div`
@@ -34,6 +33,7 @@ const EntryContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1;
 `;
 
 const SpaceBetween = styled.div`
@@ -96,13 +96,18 @@ function App() {
         </SpaceBetween>
         <EntryContainer>
           {entries.map(entry => (
-            <Card bordered={true} shadow={false}>
+            <Card bordered={true} shadow={false} key={entry.date}>
               <SpaceBetween>
                 <Text weight="semibold">{entry.amount}</Text>
                 <Text>{moment(entry.date).calendar()}</Text>
               </SpaceBetween>
             </Card>
           ))}
+          {entries.length === 0 && (
+            <Card>
+              <Text>You don't have any entries yet. Click <Text as="span" color="primary">New</Text> above to start.</Text>
+            </Card>
+          )}
         </EntryContainer>
       </HistoryContainer>
       <Modal
