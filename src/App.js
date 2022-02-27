@@ -1,9 +1,10 @@
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import styled from 'styled-components';
-import { Button, Card, Text, Modal, Input, useTheme } from '@nextui-org/react';
+import { Button, Card, Text, Modal, Input, useTheme, Link } from '@nextui-org/react';
 import { useState } from 'react';
 import { useStore } from './store';
+import moment from 'moment';
 
 const Main = styled.div`
   margin: 0 1rem;
@@ -11,7 +12,7 @@ const Main = styled.div`
 `;
 
 const ProgressBarContainer = styled.div`
-  width: 20rem;
+  max-width: 20rem;
   margin: 0 auto;
   margin-top: 2rem;
 `;
@@ -43,19 +44,28 @@ const SpaceBetween = styled.div`
 
 function App() {
   const [visible, setVisible] = useState(false);
+  const [goalModalvisible, setGoalModalVisible] = useState(false);
   const { theme } = useTheme()
   const entries = useStore(state => state.entries);
   const total = useStore(state => state.getTotal());
   const goal = useStore(state => state.goal);
   const addEntry = useStore(state => state.addEntry);
+  const setGoal = useStore(state => state.setGoal);
   const completionPercent = useStore(state => state.getCompletionPercent());
+
 
   function handleForm(e) {
     e.preventDefault();
     const amount = e.target.amount.value;
     setVisible(false);
-    addEntry({ amount: amount, date: 'today' });
-    console.log(amount);
+    addEntry({ amount: amount, date: moment().valueOf() });
+  }
+
+  function handleGoalForm(e) {
+    e.preventDefault();
+    const goal = e.target.goal.value;
+    setGoalModalVisible(false);
+    setGoal(goal);
   }
 
   return (
@@ -69,7 +79,7 @@ function App() {
         >
           <CenterAligned>
             <Text size="3rem" weight="semibold">{total}</Text>
-            <Text>of ${goal}</Text>
+            <Text>of <Link block onClick={() => setGoalModalVisible(true)}>${goal}</Link></Text>
           </CenterAligned>
         </CircularProgressbarWithChildren>
       </ProgressBarContainer>
@@ -87,8 +97,8 @@ function App() {
           {entries.map(entry => (
             <Card bordered={true} shadow={false}>
               <SpaceBetween>
-                <Text>{entry.amount}</Text>
-                <Text>{entry.date}</Text>
+                <Text weight="semibold">{entry.amount}</Text>
+                <Text>{moment(entry.date).calendar()}</Text>
               </SpaceBetween>
             </Card>
           ))}
@@ -114,6 +124,29 @@ function App() {
               type="number"
             />
             <Button auto>Add</Button>
+          </Modal.Body>
+        </form>
+      </Modal>
+      <Modal
+        closeButton
+        open={goalModalvisible}
+        onClose={() => setGoalModalVisible(false)}
+      >
+        <Modal.Header>
+          <Text>Set goal</Text>
+        </Modal.Header>
+        <form
+          onSubmit={handleGoalForm}
+        >
+          <Modal.Body>
+            <Input
+              bordered
+              label="Goal"
+              autoFocus
+              name="goal"
+              type="number"
+            />
+            <Button auto>Set</Button>
           </Modal.Body>
         </form>
       </Modal>
