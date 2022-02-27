@@ -2,12 +2,14 @@ import create from 'zustand';
 import currency from 'currency.js';
 
 const useStore = create((set, get) => ({
-    entries: [{ amount: 45, date: "today" }],
+    entries: [],
     goal: 500,
     setGoal: (goal) => set({ goal: currency(goal).value }),
     addEntry: (entryObj) => set((state) => ({ entries: [entryObj, ...state.entries] })),
     getTotal: () => {
-        const total = get().entries.reduce((prev, entry) => currency(prev).add(currency(entry.amount)), 0);
+        const entries = get().entries;
+        if (entries.length === 0) return '$0';
+        const total = entries.reduce((prev, entry) => currency(prev).add(currency(entry.amount)), 0);
         return total.format();
     },
     getCompletionPercent: () => {
