@@ -68,9 +68,6 @@ function App() {
           }}
         >
           <CenterAligned>
-            <pre>
-              {completionPercent}
-            </pre>
             <Text size="3rem" weight="semibold">{total}</Text>
             <Text>of ${goal}</Text>
           </CenterAligned>
